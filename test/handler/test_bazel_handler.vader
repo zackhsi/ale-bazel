@@ -1,0 +1,30 @@
+Before:
+    runtime autoload/ale_handlers/scala/bazel.vim
+
+After:
+    call ale#linter#Reset()
+
+Execute(The bazel handler should handle basic warnings and syntax errors):
+  AssertEqual
+  \ [
+  \   {
+  \     'lnum': 9,
+  \     'type': 'E',
+  \     'text': 'error: not found: type Foo',
+  \   },
+  \ ],
+  \ ale_handlers#scala#bazel#Handle(1, [
+  \    "path/to/file.scala:9: error: not found: type Foo",
+  \ ])
+
+  AssertEqual
+  \ [
+  \   {
+  \     'lnum': 3,
+  \     'type': 'W',
+  \     'text': 'warning: Unused import',
+  \   },
+  \ ],
+  \ ale_handlers#scala#bazel#Handle(1, [
+  \    "path/to/file.scala:3: warning: Unused import",
+  \ ])
