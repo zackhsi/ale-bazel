@@ -44,3 +44,17 @@ Execute(The bazel handler should handle column number):
   \    "  def job(args: Foo)(): Unit =",
   \    "                ^",
   \ ])
+
+Execute(The bazel handler should handle failed builds):
+  AssertEqual
+  \ [
+  \   {
+  \     'lnum': 1,
+  \     'type': 'E',
+  \     'text': 'Build failed.',
+  \   },
+  \ ],
+  \ ale_handlers#scala#bazel#Handle(1, [
+  \    "FAILED: Build did NOT complete successfully",
+  \    "FAILED: Build did NOT complete successfully",
+  \ ])
