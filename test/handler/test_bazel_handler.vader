@@ -28,3 +28,19 @@ Execute(The bazel handler should handle basic warnings and syntax errors):
   \ ale_handlers#scala#bazel#Handle(1, [
   \    "path/to/file.scala:3: warning: Unused import",
   \ ])
+
+Execute(The bazel handler should handle column number):
+  AssertEqual
+  \ [
+  \   {
+  \     'lnum': 9,
+  \     'col': 17,
+  \     'type': 'E',
+  \     'text': 'error: not found: type Foo',
+  \   },
+  \ ],
+  \ ale_handlers#scala#bazel#Handle(1, [
+  \    "path/to/file.scala:9: error: not found: type Foo",
+  \    "  def job(args: Foo)(): Unit =",
+  \    "                ^",
+  \ ])

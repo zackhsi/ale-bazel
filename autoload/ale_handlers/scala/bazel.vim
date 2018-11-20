@@ -4,6 +4,7 @@ function! ale_handlers#scala#bazel#Handle(buffer, lines) abort
     " path/to/file.scala:5: error: not found: type Args
     " path/to/file.scala:3: warning: Unused import
     let l:pattern = '^[^:]\+:\(\d\+\):\s*\(\([^:]\+\).*\)$'
+    let l:column_pattern = '^ *\^'
     let l:output = []
 
     for l:line in a:lines
@@ -16,6 +17,14 @@ function! ale_handlers#scala#bazel#Handle(buffer, lines) abort
             \   'type': l:match[3] =~? 'error' ? 'E' : 'W',
             \})
         else
+            " Look for column markers like '   ^' second.
+            " The column index will be set according to how long the line is.
+            let l:column_match = matchstr(l:line, l:column_pattern)
+            if !empty(l:column_match) && !empty(l:output)
+                let l:output[-1].col = len(l:column_match)
+            endif
+
+
         endif
     endfor
 
